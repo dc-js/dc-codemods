@@ -67,9 +67,9 @@ const utilsFunctions = [
 
 const miscMappings = [
     ['dc.hasChart', 'chartGroup.has'],
-    ['dc.units.integers', 'new dc.UnitsInteger'],
-    ['dc.units.ordinal', 'new dc.UnitsOrdinal'],
-    ['dc.units.fp.precision', 'new dc.UnitWithPrecision'],
+    ['dc.units.integers', 'dc.UnitsInteger'],
+    ['dc.units.ordinal', 'dc.UnitsOrdinal'],
+    ['dc.units.fp.precision', 'dc.UnitWithPrecision'],
     ['dc.htmlLegend', 'new dc.HtmlLegend'],
     ['dc.legend', 'new dc.Legend'],
 ];
