@@ -1,0 +1,5 @@
+# ignore IDE files
+.idea
+
+# Node libraries
+node_modules
