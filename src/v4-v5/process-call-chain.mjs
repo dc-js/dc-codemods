@@ -10,6 +10,15 @@ export function processCallChain(chart, callExpressionPath, api) {
     const { jscodeshift, stats, report } = api;
     const j = jscodeshift;
 
+    // We need to locate this node, so, we rename it to 'book-mark' which is an invalid identifier name
+    // This way we guarantee not to conflict with any other identifier
+    // When done, it will be replace back to original name
+    j(callExpressionPath).replaceWith(path => {
+        const node = path.node;
+        node.callee.object.name = 'book-mark';
+        return node;
+    });
+
     const accumulator = { conf: [], data: [], points: [], layers: [] };
 
     let callExpressionNode;
@@ -90,7 +99,7 @@ export function processCallChain(chart, callExpressionPath, api) {
     if (accumulator.conf.length > 0) {
         j(callExpressionPath)
             .find(j.Identifier, {
-                name: chart.varName,
+                name: 'book-mark',
             })
             .replaceWith(firstInChain => {
                 const argNode = j.objectExpression(
@@ -173,7 +182,7 @@ export function processCallChain(chart, callExpressionPath, api) {
 
         j(callExpressionPath)
             .find(j.Identifier, {
-                name: chart.varName,
+                name: 'book-mark',
             })
             .replaceWith(firstInChain => {
                 const argNode = j.objectExpression(
@@ -202,4 +211,15 @@ export function processCallChain(chart, callExpressionPath, api) {
                 );
             });
     }
+
+    // rename the name to the original variable name
+    j(callExpressionPath)
+        .find(j.Identifier, {
+            name: 'book-mark',
+        })
+        .replaceWith(path => {
+            const node = path.node;
+            node.name = chart.varName;
+            return node;
+        });
 }

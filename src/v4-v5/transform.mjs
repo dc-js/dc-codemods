@@ -2,11 +2,13 @@ import { process } from './process.mjs';
 import { parse } from 'node-html-parser';
 import { setupExtensions } from './setup-extensions.mjs';
 
+import jscodesift from 'jscodeshift';
+
+setupExtensions(jscodesift);
+
 export default (fileInfo, api, options) => {
     const { jscodeshift, stats, report } = api;
     const j = jscodeshift;
-
-    setupExtensions(j);
 
     if (fileInfo.path.match(/\.htm(l)?$/)) {
         // The file is HTML
