@@ -5,6 +5,7 @@ import {
     stackDataOptions,
 } from './conf/data-options.mjs';
 import { chartProps } from './conf/conf-options.mjs';
+import { renameMappings } from './conf/rename-mappings.mjs';
 
 export function processCallChain(chart, callExpressionPath, api) {
     const { jscodeshift, stats, report } = api;
@@ -31,7 +32,13 @@ export function processCallChain(chart, callExpressionPath, api) {
         callExpressionNode.type === 'CallExpression' &&
         callExpressionNode.arguments.length >= 1
     ) {
-        const fnName = memberExpressionNode.property.name;
+        let fnName = memberExpressionNode.property.name;
+
+        // Check if the function needs renaming
+        if (renameMappings[chart.type] && renameMappings[chart.type][fnName]) {
+            fnName = renameMappings[chart.type][fnName];
+            memberExpressionNode.property.name = fnName;
+        }
 
         // All data related conf options
         if (

@@ -198,6 +198,7 @@ chartProps['TextFilterWidget'] = [
 
 chartProps['SeriesChart'] = [
     ...chartProps['CompositeChart'],
+    'chartFunction',
     'seriesAccessor',
     'seriesSort',
     'valueSort',
