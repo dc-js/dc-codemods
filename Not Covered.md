@@ -2,7 +2,7 @@
 
 ## v4-v5
 
-- colors - TODO, converet with best effort, else issue message
+- colors - TODO, convert with best effort, else issue message
 - rangeChart - TODO, issue message
 - focusChart - TODO, issue message
 - StackMixin.title with 2 parameters - TODO, better implementation
@@ -14,3 +14,4 @@
 - pluck(x, f) -> TODO, issue message, {@link pluck2 | pluck2(x, f)}
 - utils.constant -> TODO, issue message, convert to function like `x => () => x`
 - utils.printSingleValue.fformat -> TODO, issue message, {@link Config.floatFormat | config.floatFormat}
+- warning about multiple calls to stack
