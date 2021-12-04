@@ -1,13 +1,18 @@
 import { chartProps } from './conf-options.mjs';
 import { processCallChain } from './process-call-chain.mjs';
 import { functionMappings } from './function-mappings.mjs';
+import { constructorMapping } from './constructor-mapping.mjs';
 
 export function process(root, api, options) {
     const { jscodeshift, stats, report } = api;
     const j = jscodeshift;
 
     functionMappings.forEach(([orig, replacement]) =>
-        root.findExpressions(orig).replaceExpression(replacement)
+        root.findMemberChain(orig).replaceMemberChain(replacement)
+    );
+
+    constructorMapping.forEach(([orig, replacement]) =>
+        root.findExpressions(orig).replaceWithNewExpression(replacement)
     );
 
     // Add chart group

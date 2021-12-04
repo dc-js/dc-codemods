@@ -1,5 +1,35 @@
 export function setupExtensions(j) {
     j.registerMethods({
+        findMemberChain: function (expr) {
+            const parts = expr.split('.');
+
+            let node = { type: 'Identifier', name: parts.shift() };
+            while (parts.length > 0) {
+                node = {
+                    type: 'MemberExpression',
+                    object: node,
+                    property: { type: 'Identifier', name: parts.shift() },
+                };
+            }
+
+            const { object, property } = node;
+            return this.find(j.MemberExpression, {
+                object,
+                property,
+            });
+        },
+
+        replaceMemberChain: function (expr) {
+            const [obj, property] = expr.split('.');
+            return this.replaceWith(path => {
+                const node = path.node;
+                return j.memberExpression(
+                    j.identifier(obj),
+                    j.identifier(property)
+                );
+            });
+        },
+
         findExpressions: function (expr) {
             const parts = expr.split('.');
 
@@ -17,13 +47,7 @@ export function setupExtensions(j) {
             });
         },
 
-        replaceExpression: function (expr) {
-            let isConstructor = false;
-            if (expr.match(/^new\s+/)) {
-                isConstructor = true;
-                expr = expr.replace(/^new\s+/, '');
-            }
-
+        replaceWithNewExpression: function (expr) {
             const [obj, property] = expr.split('.');
             return this.replaceWith(path => {
                 const node = path.node;
@@ -32,9 +56,7 @@ export function setupExtensions(j) {
                     j.identifier(property)
                 );
 
-                return isConstructor
-                    ? j.newExpression(memberExpression, node.arguments)
-                    : j.callExpression(memberExpression, node.arguments);
+                return j.newExpression(memberExpression, node.arguments);
             });
         },
     });
