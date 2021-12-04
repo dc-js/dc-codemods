@@ -34,6 +34,21 @@ export function process(root, api, options) {
 
     addChartGroup(chartsCreations, root, j);
 
+    // Find out if there is a call chain with the constructor, if yes, process the chain
+    chartsCreations
+        .map(path => path.parent.parent)
+        .filter(
+            path =>
+                path.node.type === 'CallExpression' &&
+                path.node.callee.type === 'MemberExpression'
+        )
+        .forEach(callChainPath => {
+            const chartType =
+                callChainPath.node.callee.object.callee.property.name;
+
+            processCallChain(chartType, callChainPath, api);
+        });
+
     // Try to find variable names for charts
     const getVarName = entry => {
         // Try, `const/var/let chart = new dc.BarChart('#bar-chart')
