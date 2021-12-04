@@ -52,7 +52,7 @@ mixinProps['StackMixin'] = [
 ];
 
 // Charts
-const chartProps = {};
+export const chartProps = {};
 chartProps['BarChart'] = [
     ...mixinProps['StackMixin'],
     'alwaysUseRounding',
@@ -202,5 +202,3 @@ chartProps['SeriesChart'] = [
     'seriesSort',
     'valueSort',
 ];
-
-export { chartProps };
