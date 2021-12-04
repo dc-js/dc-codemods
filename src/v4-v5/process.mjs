@@ -2,6 +2,7 @@ import { chartProps } from './conf/conf-options.mjs';
 import { processCallChain } from './process-call-chain.mjs';
 import { functionMappings } from './conf/function-mappings.mjs';
 import { constructorMappings } from './conf/constructor-mappings.mjs';
+import { addChartGroup } from './add-chart-group.mjs';
 
 export function process(root, api, options) {
     const { jscodeshift, stats, report } = api;
@@ -31,25 +32,7 @@ export function process(root, api, options) {
 
     report(`Found ${chartsCreations.size()} charts`);
 
-    // If there are charts, add the chartGroup declaration
-    if (chartsCreations.size() > 0) {
-        root.find(j.VariableDeclaration)
-            .at(0)
-            .insertBefore('const chartGroup = new dc.ChartGroup();');
-    }
-
-    // Add chartGroup as explicit parameter in chart creation
-    chartsCreations.replaceWith(path => {
-        const node = path.node;
-        if (node.arguments.length > 1) {
-            report(
-                `Found custom chart group '${node.arguments[1].value}' for ${node.callee.property.name}, please upgrade manually`
-            );
-            return node;
-        }
-        node.arguments.push(j.identifier('chartGroup'));
-        return node;
-    });
+    addChartGroup(chartsCreations, root, j);
 
     // Try to find variable names for charts
     const getVarName = entry => {
