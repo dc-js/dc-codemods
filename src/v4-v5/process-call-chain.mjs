@@ -3,8 +3,8 @@ import {
     capDataOptions,
     stackCharts,
     stackDataOptions,
-} from './data-options.mjs';
-import { chartProps } from './conf-options.mjs';
+} from './conf/data-options.mjs';
+import { chartProps } from './conf/conf-options.mjs';
 
 export function processCallChain(chart, callExpressionPath, api) {
     const { jscodeshift, stats, report } = api;

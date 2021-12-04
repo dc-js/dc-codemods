@@ -1,7 +1,7 @@
-import { chartProps } from './conf-options.mjs';
+import { chartProps } from './conf/conf-options.mjs';
 import { processCallChain } from './process-call-chain.mjs';
-import { functionMappings } from './function-mappings.mjs';
-import { constructorMapping } from './constructor-mapping.mjs';
+import { functionMappings } from './conf/function-mappings.mjs';
+import { constructorMappings } from './conf/constructor-mappings.mjs';
 
 export function process(root, api, options) {
     const { jscodeshift, stats, report } = api;
@@ -11,7 +11,7 @@ export function process(root, api, options) {
         root.findMemberChain(orig).replaceMemberChain(replacement)
     );
 
-    constructorMapping.forEach(([orig, replacement]) =>
+    constructorMappings.forEach(([orig, replacement]) =>
         root.findExpressions(orig).replaceWithNewExpression(replacement)
     );
 

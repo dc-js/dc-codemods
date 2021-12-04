@@ -37,7 +37,7 @@ const miscMappings = [
     ['dc.legend', 'dc.Legend'],
 ];
 
-export const constructorMapping = [
+export const constructorMappings = [
     ...chartConstrutorsMapping,
     ...filtersConstructors,
     ...miscMappings,

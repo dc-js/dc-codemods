@@ -1,6 +1,6 @@
 import { process } from './process.mjs';
 import { parse } from 'node-html-parser';
-import { setupExtensions } from './setup-extensions.mjs';
+import { setupExtensions } from './utils/setup-extensions.mjs';
 
 import jscodesift from 'jscodeshift';
 
