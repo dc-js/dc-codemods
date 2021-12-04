@@ -7,16 +7,19 @@ import {
 import { chartProps } from './conf/conf-options.mjs';
 import { renameMappings } from './conf/rename-mappings.mjs';
 
-export function processCallChain(chart, callExpressionPath, api) {
+export function processCallChain(chartType, callExpressionPath, api) {
     const { jscodeshift, stats, report } = api;
     const j = jscodeshift;
 
-    // We need to locate this node, so, we rename it to 'book-mark' which is an invalid identifier name
+    let origObjectNode;
+
+    // We need to locate this node, so, we replace it with 'book-mark' (which is an invalid identifier name)
     // This way we guarantee not to conflict with any other identifier
-    // When done, it will be replace back to original name
+    // When done, it will be replace back to original node
     j(callExpressionPath).replaceWith(path => {
         const node = path.node;
-        node.callee.object.name = 'book-mark';
+        origObjectNode = node.callee.object;
+        node.callee.object = j.identifier('book-mark');
         return node;
     });
 
@@ -35,8 +38,8 @@ export function processCallChain(chart, callExpressionPath, api) {
         let fnName = memberExpressionNode.property.name;
 
         // Check if the function needs renaming
-        if (renameMappings[chart.type] && renameMappings[chart.type][fnName]) {
-            fnName = renameMappings[chart.type][fnName];
+        if (renameMappings[chartType] && renameMappings[chartType][fnName]) {
+            fnName = renameMappings[chartType][fnName];
             memberExpressionNode.property.name = fnName;
         }
 
@@ -66,7 +69,7 @@ export function processCallChain(chart, callExpressionPath, api) {
 
         // Collect all chart conf options and remove the call
         if (
-            chartProps[chart.type].includes(fnName) &&
+            chartProps[chartType].includes(fnName) &&
             callExpressionNode.arguments.length === 1
         ) {
             accumulator.conf.push({
@@ -78,7 +81,7 @@ export function processCallChain(chart, callExpressionPath, api) {
         }
 
         // Collect all the points
-        if (chart.type === 'BubbleOverlay' && fnName === 'point') {
+        if (chartType === 'BubbleOverlay' && fnName === 'point') {
             accumulator.points.push(callExpressionNode.arguments);
             j(callExpressionPath).replaceWith(p => p.node.callee.object);
         }
@@ -131,7 +134,7 @@ export function processCallChain(chart, callExpressionPath, api) {
     if (accumulator.data.length > 0 || accumulator.layers.length > 0) {
         let adapterClass = 'CFSimpleAdapter';
 
-        if (stackCharts.includes(chart.type)) {
+        if (stackCharts.includes(chartType)) {
             adapterClass = 'CFMultiAdapter';
         } else if (
             accumulator.data.some(i => capDataOptions.includes(i.propName))
@@ -139,7 +142,7 @@ export function processCallChain(chart, callExpressionPath, api) {
             adapterClass = 'CFDataCapHelper';
         }
 
-        if (stackCharts.includes(chart.type)) {
+        if (stackCharts.includes(chartType)) {
             let layer0 = {};
             accumulator.data = accumulator.data.flatMap(item => {
                 if (item.propName === 'group') {
@@ -225,8 +228,6 @@ export function processCallChain(chart, callExpressionPath, api) {
             name: 'book-mark',
         })
         .replaceWith(path => {
-            const node = path.node;
-            node.name = chart.varName;
-            return node;
+            return origObjectNode;
         });
 }

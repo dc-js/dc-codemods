@@ -68,7 +68,7 @@ export function process(root, api, options) {
                 },
             },
         }).forEach(callExpressionPath =>
-            processCallChain(chart, callExpressionPath, api)
+            processCallChain(chart.type, callExpressionPath, api)
         );
     });
 
