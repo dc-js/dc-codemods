@@ -1,8 +1,5 @@
 // dc.renderAll --> chartGroup.renderAll
 const chartRegistryFunctions = [
-    'registerChart',
-    'deregisterChart',
-    'deregisterAllCharts',
     'filterAll',
     'refocusAll',
     'renderAll',
@@ -33,6 +30,9 @@ const utilsFunctions = [
 
 const miscMappings = [
     ['dc.hasChart', 'chartGroup.has'],
+    ['dc.registerChart', 'chartGroup.register'],
+    ['dc.deregisterChart', 'chartGroup.deregister'],
+    ['dc.deregisterAllCharts', 'chartGroup.clear'],
     ['dc.units.integers', 'dc.UnitsInteger'],
     ['dc.units.ordinal', 'dc.UnitsOrdinal'],
     ['dc.units.fp.precision', 'dc.UnitWithPrecision'],
