@@ -27,8 +27,10 @@ export function processCallChain(chartType, callExpressionPath, api) {
 
     let callExpressionNode;
     let memberExpressionNode;
+    let endOfChain = false;
 
     while (
+        !endOfChain &&
         (callExpressionNode = callExpressionPath.node) &&
         (memberExpressionNode = callExpressionNode.callee) &&
         memberExpressionNode.type === 'MemberExpression' &&
@@ -86,7 +88,13 @@ export function processCallChain(chartType, callExpressionPath, api) {
             j(callExpressionPath).replaceWith(p => p.node.callee.object);
         }
 
-        callExpressionPath = callExpressionPath.parent.parent;
+        // check if we are still in the same call chain
+        const grandParent = callExpressionPath.parent.parent;
+        endOfChain =
+            !grandParent.node.callee ||
+            grandParent.node.callee.object !== callExpressionPath.node;
+
+        callExpressionPath = grandParent;
     }
 
     // TODO: if only one point, then it is likely in a loop, issue a warning or generate different code
