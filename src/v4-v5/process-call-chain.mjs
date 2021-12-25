@@ -198,6 +198,30 @@ export function processCallChain(chartType, callExpressionPath, api) {
             });
         }
 
+        // For ScatterPlot, if there is no valueAccessor, assign the default one - d => d.key[1]
+        if (
+            chartType === 'ScatterPlot' &&
+            !accumulator.data.some(
+                prop => prop.propName === 'valueAccessor'
+            )
+        ) {
+            accumulator.data.push({
+                propName: 'valueAccessor',
+                arguments: [
+                    j.arrowFunctionExpression(
+                        [j.identifier('d')],
+                        j.memberExpression(
+                            j.memberExpression(
+                                j.identifier('d'),
+                                j.identifier('key')
+                            ),
+                            j.literal(1)
+                        )
+                    ),
+                ],
+            });
+        }
+
         j(callExpressionPath)
             .find(j.Identifier, {
                 name: 'book-mark',
