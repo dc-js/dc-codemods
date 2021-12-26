@@ -201,9 +201,7 @@ export function processCallChain(chartType, callExpressionPath, api) {
         // For ScatterPlot, if there is no valueAccessor, assign the default one - d => d.key[1]
         if (
             chartType === 'ScatterPlot' &&
-            !accumulator.data.some(
-                prop => prop.propName === 'valueAccessor'
-            )
+            !accumulator.data.some(prop => prop.propName === 'valueAccessor')
         ) {
             accumulator.data.push({
                 propName: 'valueAccessor',
