@@ -6,6 +6,8 @@ mixinProps['BaseMixin'] = [
     'filterPrinter',
     'keyAccessor',
     'label',
+    'height',
+    'width',
     'minHeight',
     'minWidth',
     'renderLabel',
